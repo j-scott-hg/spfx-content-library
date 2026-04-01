@@ -1,0 +1,1570 @@
+// ─── Variables ────────────────────────────────────────────────────────────────
+$color-primary: #0078d4;
+$color-primary-dark: #106ebe;
+$color-primary-light: #deecf9;
+$color-surface: #ffffff;
+$color-surface-alt: #f3f2f1;
+$color-border: #edebe9;
+$color-border-strong: #c8c6c4;
+$color-text-primary: #201f1e;
+$color-text-secondary: #605e5c;
+$color-text-disabled: #a19f9d;
+$color-hover: #f3f2f1;
+$color-active: #edebe9;
+$color-focus: #0078d4;
+
+$radius-sm: 4px;
+$radius-md: 8px;
+$radius-lg: 12px;
+$radius-xl: 16px;
+
+$shadow-subtle: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.06);
+$shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.10), 0 2px 4px rgba(0, 0, 0, 0.06);
+$shadow-strong: 0 8px 24px rgba(0, 0, 0, 0.14), 0 4px 8px rgba(0, 0, 0, 0.08);
+
+$transition-fast: 0.15s ease;
+$transition-normal: 0.2s ease;
+
+// ─── Root Container ───────────────────────────────────────────────────────────
+.contentLibraryRoot {
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  color: $color-text-primary;
+  box-sizing: border-box;
+
+  *, *::before, *::after {
+    box-sizing: inherit;
+  }
+}
+
+// ─── Web Part Title ───────────────────────────────────────────────────────────
+.webPartTitle {
+  font-size: 20px;
+  font-weight: 600;
+  color: $color-text-primary;
+  margin: 0 0 16px 0;
+  line-height: 1.3;
+}
+
+// ─── Layout Wrappers ─────────────────────────────────────────────────────────
+.layoutWrapper {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+
+  &.layoutTop {
+    flex-direction: column;
+  }
+
+  &.layoutLeft {
+    flex-direction: row;
+  }
+
+  &.layoutRight {
+    flex-direction: row-reverse;
+  }
+}
+
+.mainContent {
+  flex: 1;
+  min-width: 0;
+}
+
+.sidePanel {
+  flex-shrink: 0;
+  width: 220px;
+}
+
+// ─── Search Bar ───────────────────────────────────────────────────────────────
+
+// Minimal style
+.searchBarMinimal {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: $color-surface;
+  border: 1px solid $color-border-strong;
+  border-radius: $radius-md;
+  padding: 8px 12px;
+  transition: border-color $transition-fast, box-shadow $transition-fast;
+
+  &:focus-within {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+  }
+
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 14px;
+    color: $color-text-primary;
+    font-family: inherit;
+
+    &::placeholder {
+      color: $color-text-disabled;
+    }
+  }
+
+  .searchIcon {
+    color: $color-text-secondary;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+}
+
+// Elevated card style
+.searchBarElevated {
+  background: $color-surface;
+  border-radius: $radius-lg;
+  box-shadow: $shadow-medium;
+  padding: 16px 20px;
+  margin-bottom: 4px;
+
+  .searchBarMinimal {
+    border-radius: $radius-md;
+    padding: 10px 16px;
+    font-size: 15px;
+    border-color: $color-border;
+  }
+}
+
+// Toolbar style
+.searchBarToolbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: $color-surface;
+  border-bottom: 1px solid $color-border;
+  padding: 10px 0;
+  margin-bottom: 12px;
+
+  .toolbarTitle {
+    font-size: 15px;
+    font-weight: 600;
+    color: $color-text-primary;
+    flex-shrink: 0;
+  }
+
+  .toolbarSpacer {
+    flex: 1;
+  }
+
+  .searchBarMinimal {
+    width: 260px;
+    margin: 0;
+  }
+}
+
+// ─── Filter / Category Bar ────────────────────────────────────────────────────
+
+// Pills / horizontal tabs
+.filterPills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 16px;
+  align-items: center;
+}
+
+.filterPill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 16px;
+  border-radius: 20px;
+  border: 1.5px solid $color-border-strong;
+  background: $color-surface;
+  color: $color-text-primary;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background: $color-primary-light;
+    border-color: $color-primary;
+    color: $color-primary;
+  }
+
+  &.active {
+    background: $color-primary;
+    border-color: $color-primary;
+    color: #ffffff;
+
+    .filterCount {
+      background: rgba(255, 255, 255, 0.25);
+      color: #ffffff;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+.filterCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 20px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 10px;
+  background: $color-surface-alt;
+  color: $color-text-secondary;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+// Compact buttons
+.filterCompact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 12px;
+}
+
+.filterCompactBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 12px;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border-strong;
+  background: $color-surface;
+  color: $color-text-primary;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all $transition-fast;
+
+  &:hover {
+    background: $color-hover;
+  }
+
+  &.active {
+    background: $color-primary;
+    border-color: $color-primary;
+    color: #ffffff;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+// Vertical rail
+.categoryRail {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.categoryRailTitle {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: $color-text-secondary;
+  padding: 0 12px 8px;
+  margin-bottom: 4px;
+}
+
+.categoryRailItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 9px 12px;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  transition: background $transition-fast;
+  font-size: 14px;
+  color: $color-text-primary;
+  border: none;
+  background: transparent;
+  width: 100%;
+  text-align: left;
+
+  &:hover {
+    background: $color-hover;
+  }
+
+  &.active {
+    background: $color-primary-light;
+    color: $color-primary;
+    font-weight: 600;
+
+    .categoryRailCount {
+      background: $color-primary;
+      color: #ffffff;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: -2px;
+  }
+}
+
+.categoryRailCount {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 20px;
+  padding: 0 6px;
+  border-radius: 10px;
+  background: $color-surface-alt;
+  color: $color-text-secondary;
+  font-size: 11px;
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+// Category cards
+.categoryCards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.categoryCard {
+  background: $color-primary;
+  border-radius: $radius-md;
+  padding: 16px;
+  cursor: pointer;
+  transition: all $transition-normal;
+  border: 2px solid transparent;
+  color: #ffffff;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-medium;
+  }
+
+  &.active {
+    border-color: $color-text-primary;
+    box-shadow: $shadow-medium;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+
+  .categoryCardLabel {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+
+  .categoryCardCount {
+    font-size: 12px;
+    opacity: 0.8;
+  }
+}
+
+// ─── Document Table View ──────────────────────────────────────────────────────
+// ─── Table Toolbar (column picker trigger) ────────────────────────────────────
+.tableToolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 0 0 8px 0;
+}
+
+.tableColPickerBtn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  font-size: 13px;
+  font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+  font-weight: 500;
+  color: $color-text-secondary;
+  cursor: pointer;
+  transition: background $transition-fast, border-color $transition-fast, color $transition-fast;
+
+  &:hover {
+    background: $color-hover;
+    border-color: $color-border-strong;
+    color: $color-text-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+// ─── Column Picker Panel content ──────────────────────────────────────────────
+.colPickerHint {
+  font-size: 13px;
+  color: $color-text-secondary;
+  margin: 0 0 12px 0;
+  line-height: 1.5;
+}
+
+.colPickerList {
+  display: flex;
+  flex-direction: column;
+}
+
+.colPickerRow {
+  border-bottom: 1px solid $color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+// Outer wrapper: clips vertically, scrolls horizontally
+.tableScrollWrapper {
+  overflow-x: auto;
+  overflow-y: visible;
+  border-radius: $radius-md;
+  box-shadow: $shadow-subtle;
+  border: 1px solid $color-border;
+
+  // Styled scrollbar
+  &::-webkit-scrollbar {
+    height: 6px;
+  }
+  &::-webkit-scrollbar-track {
+    background: $color-surface-alt;
+    border-radius: 0 0 $radius-md $radius-md;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: $color-border-strong;
+    border-radius: 3px;
+    &:hover { background: $color-text-disabled; }
+  }
+}
+
+.tableContainer {
+  background: $color-surface;
+  // Expand to fit all columns — never compress below natural width
+  min-width: max-content;
+  width: 100%;
+}
+
+.tableHeader {
+  display: grid;
+  background: $color-surface-alt;
+  border-bottom: 1px solid $color-border;
+  padding: 0 16px;
+  // min-width inherited from tableContainer
+}
+
+.tableHeaderCell {
+  padding: 10px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  user-select: none;
+  white-space: nowrap;
+  overflow: visible;
+  position: relative; // needed for the absolute resize handle
+
+  &:hover {
+    color: $color-text-primary;
+
+    .colResizeHandle {
+      opacity: 1;
+    }
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: -2px;
+  }
+}
+
+.headerLabel {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  flex: 1;
+  min-width: 0;
+}
+
+// Drag handle sits on the right edge of each header cell
+.colResizeHandle {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  cursor: col-resize;
+  opacity: 0;
+  transition: opacity $transition-fast;
+  z-index: 2;
+
+  // The visible line indicator
+  &::after {
+    content: '';
+    position: absolute;
+    right: 2px;
+    top: 20%;
+    bottom: 20%;
+    width: 2px;
+    border-radius: 1px;
+    background: $color-primary;
+  }
+
+  &:hover {
+    opacity: 1;
+  }
+}
+
+.tableRow {
+  display: grid;
+  padding: 0 16px;
+  border-bottom: 1px solid $color-border;
+  transition: background $transition-fast;
+  align-items: center;
+
+  &:last-child {
+    border-bottom: none;
+  }
+
+  &:hover {
+    background: $color-hover;
+  }
+}
+
+.tableCell {
+  padding: 12px 8px;
+  font-size: 14px;
+  color: $color-text-primary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tableTitleCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  overflow: hidden;
+}
+
+.tableItemLink {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  color: $color-primary;
+  text-decoration: none;
+  font-weight: 500;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: inherit;
+  font-family: inherit;
+
+  &:hover {
+    text-decoration: underline;
+    color: $color-primary-dark;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+}
+
+// ─── Document Card Grid ───────────────────────────────────────────────────────
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 3), 1fr);
+  gap: 16px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.documentCard {
+  background: $color-surface;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  box-shadow: $shadow-subtle;
+  padding: 16px;
+  cursor: pointer;
+  transition: all $transition-normal;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+    border-color: $color-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+.cardHeader {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.cardIconWrapper {
+  width: 40px;
+  height: 40px;
+  border-radius: $radius-sm;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+}
+
+.cardTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text-primary;
+  line-height: 1.4;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cardDescription {
+  font-size: 13px;
+  color: $color-text-secondary;
+  line-height: 1.5;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.cardMeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.cardMetaItem {
+  font-size: 12px;
+  color: $color-text-secondary;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+// ─── Tile Grid ────────────────────────────────────────────────────────────────
+.tileGrid {
+  display: grid;
+  grid-template-columns: repeat(var(--grid-cols, 4), 1fr);
+  gap: 12px;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 600px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.documentTile {
+  background: $color-surface;
+  border-radius: $radius-md;
+  border: 1px solid $color-border;
+  padding: 16px 12px;
+  cursor: pointer;
+  transition: all $transition-normal;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    box-shadow: $shadow-medium;
+    transform: translateY(-2px);
+    border-color: $color-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+.tileIconWrapper {
+  width: 48px;
+  height: 48px;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+}
+
+.tileTitle {
+  font-size: 13px;
+  font-weight: 500;
+  color: $color-text-primary;
+  line-height: 1.3;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  word-break: break-word;
+}
+
+.tileMeta {
+  font-size: 11px;
+  color: $color-text-secondary;
+}
+
+// ─── Dashboard View ───────────────────────────────────────────────────────────
+.dashboardLayout {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dashboardSection {
+  background: $color-surface;
+  border-radius: $radius-lg;
+  border: 1px solid $color-border;
+  box-shadow: $shadow-subtle;
+  overflow: hidden;
+}
+
+.dashboardSectionHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px 12px;
+  border-bottom: 1px solid $color-border;
+}
+
+.dashboardSectionTitle {
+  font-size: 15px;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.dashboardSeeAll {
+  font-size: 13px;
+  color: $color-primary;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.dashboardFolderGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 16px 20px;
+}
+
+.dashboardFolderCard {
+  border-radius: $radius-md;
+  overflow: hidden;
+  cursor: pointer;
+  position: relative;
+  height: 90px;
+  transition: all $transition-normal;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: $shadow-medium;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .folderCardOverlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0, 0, 0, 0.6));
+    padding: 8px 10px 8px;
+  }
+
+  .folderCardLabel {
+    font-size: 12px;
+    font-weight: 600;
+    color: #ffffff;
+  }
+}
+
+.dashboardDocumentList {
+  padding: 8px 0;
+}
+
+.dashboardDocumentRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 20px;
+  cursor: pointer;
+  transition: background $transition-fast;
+  text-decoration: none;
+  color: inherit;
+
+  &:hover {
+    background: $color-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: -2px;
+  }
+}
+
+.dashboardDocTitle {
+  flex: 1;
+  font-size: 14px;
+  font-weight: 500;
+  color: $color-text-primary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dashboardDocMeta {
+  font-size: 12px;
+  color: $color-text-secondary;
+  flex-shrink: 0;
+}
+
+.dashboardDocStar {
+  color: $color-text-disabled;
+  cursor: pointer;
+  transition: color $transition-fast;
+  flex-shrink: 0;
+
+  &.starred {
+    color: #FFB900;
+  }
+
+  &:hover {
+    color: #FFB900;
+  }
+}
+
+// ─── File Icons ───────────────────────────────────────────────────────────────
+.fileIconBase {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-sm;
+  font-size: inherit;
+}
+
+// ─── Loading State ────────────────────────────────────────────────────────────
+.loadingContainer {
+  padding: 24px 0;
+}
+
+.shimmerRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid $color-border;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.shimmerBlock {
+  background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+  border-radius: $radius-sm;
+}
+
+.shimmerIcon {
+  @extend .shimmerBlock;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-sm;
+  flex-shrink: 0;
+}
+
+.shimmerTitle {
+  @extend .shimmerBlock;
+  height: 14px;
+  flex: 1;
+  max-width: 300px;
+}
+
+.shimmerMeta {
+  @extend .shimmerBlock;
+  height: 12px;
+  width: 120px;
+}
+
+.shimmerCard {
+  @extend .shimmerBlock;
+  height: 120px;
+  border-radius: $radius-md;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+// ─── Empty State ──────────────────────────────────────────────────────────────
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 12px;
+}
+
+.emptyStateIcon {
+  font-size: 48px;
+  color: $color-text-disabled;
+  margin-bottom: 4px;
+}
+
+.emptyStateTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: $color-text-primary;
+}
+
+.emptyStateMessage {
+  font-size: 14px;
+  color: $color-text-secondary;
+  max-width: 320px;
+  line-height: 1.5;
+}
+
+// ─── Not Configured State ─────────────────────────────────────────────────────
+.notConfigured {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  gap: 12px;
+  background: $color-surface-alt;
+  border-radius: $radius-lg;
+  border: 2px dashed $color-border-strong;
+}
+
+.notConfiguredIcon {
+  font-size: 40px;
+  color: $color-text-disabled;
+}
+
+.notConfiguredTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: $color-text-secondary;
+}
+
+.notConfiguredMessage {
+  font-size: 14px;
+  color: $color-text-disabled;
+  max-width: 280px;
+  line-height: 1.5;
+}
+
+// ─── Sort Controls ────────────────────────────────────────────────────────────
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.sortLabel {
+  font-size: 13px;
+  color: $color-text-secondary;
+}
+
+.sortButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border-radius: $radius-sm;
+  border: 1px solid $color-border-strong;
+  background: $color-surface;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all $transition-fast;
+  color: $color-text-primary;
+
+  &:hover {
+    background: $color-hover;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+// ─── Density Modifiers ────────────────────────────────────────────────────────
+.densityCompact {
+  .documentCard { padding: 10px; gap: 6px; }
+  .tableCell { padding: 7px 8px; }
+  .documentTile { padding: 10px 8px; gap: 5px; }
+}
+
+.densityComfortable {
+  .documentCard { padding: 20px; gap: 14px; }
+  .tableCell { padding: 16px 8px; }
+  .documentTile { padding: 20px 16px; gap: 12px; }
+}
+
+// ─── Shadow Modifiers ─────────────────────────────────────────────────────────
+.shadowNone {
+  .documentCard, .tableScrollWrapper, .dashboardSection { box-shadow: none; }
+}
+
+.shadowMedium {
+  .documentCard { box-shadow: $shadow-medium; }
+  .tableScrollWrapper, .dashboardSection { box-shadow: $shadow-medium; }
+}
+
+.shadowStrong {
+  .documentCard { box-shadow: $shadow-strong; }
+  .tableScrollWrapper, .dashboardSection { box-shadow: $shadow-strong; }
+}
+
+// ─── Standalone sort bar ──────────────────────────────────────────────────────
+.sortBarStandalone {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  padding: 6px 12px;
+  background: $color-surface;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  width: fit-content;
+}
+
+.sortBarInline {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.sortBarLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-secondary;
+  white-space: nowrap;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.sortDirButton {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-sm;
+  cursor: pointer;
+  font-size: 12px;
+  color: $color-text-primary;
+  transition: background $transition-fast, border-color $transition-fast;
+  white-space: nowrap;
+
+  &:hover {
+    background: $color-hover;
+    border-color: $color-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-primary;
+    outline-offset: 2px;
+  }
+}
+
+.sortDirLabel {
+  font-size: 12px;
+}
+
+// ─── Item edit overlay (edit mode hover) ─────────────────────────────────────
+.itemEditWrapper {
+  position: relative;
+
+  &:hover .itemEditOverlay,
+  &:focus-within .itemEditOverlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}
+
+.itemEditOverlay {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity $transition-fast;
+  z-index: 10;
+}
+
+.itemEditButton {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.95);
+  border: 1px solid $color-border-strong;
+  box-shadow: $shadow-subtle;
+  cursor: pointer;
+  color: $color-text-secondary;
+  transition: all $transition-fast;
+  padding: 0;
+
+  &:hover {
+    background: $color-primary;
+    color: #ffffff;
+    border-color: $color-primary;
+    box-shadow: $shadow-medium;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+// Table row edit button — inline, not absolute
+.tableEditCell {
+  width: 36px;
+  padding: 0 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// ─── Icon Editor Panel ────────────────────────────────────────────────────────
+.iconEditorBody {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  height: 100%;
+}
+
+.iconEditorPreview {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0 16px;
+  border-bottom: 1px solid $color-border;
+  margin-bottom: 4px;
+}
+
+.iconEditorPreviewBadge {
+  width: 52px;
+  height: 52px;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.iconEditorPreviewTitle {
+  font-size: 14px;
+  font-weight: 600;
+  color: $color-text-primary;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.iconEditorSection {
+  padding: 12px 0 8px;
+  border-bottom: 1px solid $color-border;
+}
+
+.iconEditorSectionLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $color-text-secondary;
+  margin-bottom: 10px;
+}
+
+// Colour swatches
+.colorSwatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.colorSwatch {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform $transition-fast, border-color $transition-fast;
+  padding: 0;
+
+  &:hover {
+    transform: scale(1.15);
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 2px;
+  }
+}
+
+.colorSwatchActive {
+  border-color: $color-text-primary;
+  transform: scale(1.15);
+}
+
+.colorCustomRow {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.colorNativePicker {
+  width: 36px;
+  height: 28px;
+  border: 1px solid $color-border-strong;
+  border-radius: $radius-sm;
+  padding: 2px;
+  cursor: pointer;
+  background: none;
+  flex-shrink: 0;
+}
+
+.colorHexInput {
+  flex: 1;
+  height: 28px;
+  border: 1px solid $color-border-strong;
+  border-radius: $radius-sm;
+  padding: 0 8px;
+  font-size: 13px;
+  font-family: 'Consolas', monospace;
+  color: $color-text-primary;
+  background: $color-surface;
+  outline: none;
+
+  &:focus {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+  }
+}
+
+// Icon search
+.iconSearchWrapper {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid $color-border-strong;
+  border-radius: $radius-sm;
+  padding: 5px 8px;
+  background: $color-surface;
+
+  &:focus-within {
+    border-color: $color-primary;
+    box-shadow: 0 0 0 2px rgba(0, 120, 212, 0.15);
+  }
+}
+
+.iconSearchIcon {
+  color: $color-text-secondary;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.iconSearchInput {
+  flex: 1;
+  border: none;
+  outline: none;
+  background: transparent;
+  font-size: 13px;
+  color: $color-text-primary;
+  font-family: inherit;
+
+  &::placeholder {
+    color: $color-text-disabled;
+  }
+}
+
+// Icon picker scroll area
+.iconPickerScroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0 16px;
+  margin-top: 4px;
+  max-height: calc(100vh - 420px);
+  min-height: 200px;
+}
+
+.iconPickerGroup {
+  margin-bottom: 12px;
+}
+
+.iconPickerGroupLabel {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: $color-text-secondary;
+  margin-bottom: 6px;
+  padding-top: 4px;
+}
+
+.iconPickerGrid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.iconPickerCell {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-sm;
+  border: 1.5px solid transparent;
+  background: transparent;
+  cursor: pointer;
+  transition: all $transition-fast;
+  padding: 0;
+
+  &:hover {
+    background: $color-primary-light;
+    border-color: $color-primary;
+  }
+
+  &:focus-visible {
+    outline: 2px solid $color-focus;
+    outline-offset: 1px;
+  }
+}
+
+.iconPickerCellActive {
+  background: $color-primary-light;
+  border-color: $color-primary;
+}
+
+.iconPickerEmpty {
+  font-size: 13px;
+  color: $color-text-secondary;
+  padding: 16px 0;
+  text-align: center;
+}
+
+// Editor footer
+.iconEditorFooter {
+  display: flex;
+  align-items: center;
+  padding: 12px 0 4px;
+  border-top: 1px solid $color-border;
+}
+
+// ─── Search position helpers ──────────────────────────────────────────────────
+.searchPositionTopRight {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+
+  .searchBarMinimal,
+  .searchBarElevated {
+    width: 300px;
+    max-width: 100%;
+  }
+}
+
+// ─── Item Detail Panel ────────────────────────────────────────────────────────
+.detailPanelBody {
+  padding: 0 24px 24px;
+}
+
+.detailPanelHero {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid $color-border;
+  margin-bottom: 4px;
+}
+
+.detailPanelHeroIcon {
+  width: 44px;
+  height: 44px;
+  border-radius: $radius-md;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  font-size: 22px;
+}
+
+.detailPanelHeroTitle {
+  font-size: 18px;
+  font-weight: 600;
+  color: $color-text-primary;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.detailPanelSection {
+  margin-top: 16px;
+}
+
+.detailPanelRow {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  gap: 6px 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid $color-border;
+  align-items: baseline;
+
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+.detailPanelLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-secondary;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-top: 1px;
+}
+
+.detailPanelValue {
+  font-size: 14px;
+  color: $color-text-primary;
+  word-break: break-word;
+  line-height: 1.5;
+}
+
+.detailPanelValueMuted {
+  font-size: 13px;
+  color: $color-text-secondary;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.detailPanelBadge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 500;
+  background: $color-primary-light;
+  color: $color-primary-dark;
+}
+
+.detailPanelDivider {
+  height: 1px;
+  background: $color-border;
+  margin: 16px 0 8px;
+}
+
+.detailPanelFooter {
+  padding: 16px 24px;
+  border-top: 1px solid $color-border;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: $color-text-secondary;
+}
+
+// ─── Responsive Helpers ───────────────────────────────────────────────────────
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
+.overflowHidden {
+  overflow: hidden;
+}
+
+.truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
