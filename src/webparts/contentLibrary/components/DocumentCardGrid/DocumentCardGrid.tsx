@@ -6,6 +6,7 @@ import { IItemIconOverride } from '../../models/IWebPartConfig';
 import { formatDate, formatFieldValue, truncate } from '../../helpers/fieldFormatting';
 import { getFileIconInfo, getFileIconColorHex } from '../../helpers/fileIconMapping';
 import { getContrastTextColor, tintColor } from '../../helpers/colorUtils';
+import { isItemNew } from '../../helpers/dateUtils';
 import { LinkTarget } from '../../models/IWebPartConfig';
 import styles from '../../styles/ContentLibrary.module.scss';
 
@@ -132,16 +133,22 @@ const DocumentCardGrid: React.FC<IDocumentCardGridProps> = ({
           ...(cardBg ? { background: cardBg, borderColor: cardBorderColor } : {}),
         };
 
+        const isNew = isItemNew(item);
+
         const card = (
           <div
             role="button"
             tabIndex={0}
             className={styles.documentCard}
-            style={{ ...cardStyle, cursor: 'pointer' }}
+            style={{ ...cardStyle, cursor: 'pointer', position: 'relative' }}
             aria-label={displayTitle}
             onClick={() => onItemClick(item)}
             onKeyDown={e => (e.key === 'Enter' || e.key === ' ') && onItemClick(item)}
           >
+            {/* NEW badge */}
+            {isNew && (
+              <span className={styles.newBadge} aria-label="New item">NEW</span>
+            )}
             {/* Category colour accent bar */}
             {catBgHex && (
               <div
@@ -184,7 +191,7 @@ const DocumentCardGrid: React.FC<IDocumentCardGridProps> = ({
                 return (
                   <span key={idx} className={styles.cardMetaItem} style={{ ...(cardTextColor ? { color: cardTextColor, opacity: 0.7 } : {}) }}>
                     <Icon iconName={metaIcon(fieldName)} aria-hidden="true" />
-                    {val}
+                    <span className={styles.metaText}>{val}</span>
                   </span>
                 );
               })}

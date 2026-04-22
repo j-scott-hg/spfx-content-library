@@ -367,6 +367,7 @@ export default class ContentLibraryWebPart extends BaseClientSideWebPart<IConten
                   label: 'Item display style',
                   options: [
                     { key: 'card-grid', text: 'Card grid — modern cards with metadata' },
+                    { key: 'preview', text: 'Preview — thumbnail cards with image support' },
                     { key: 'table', text: 'Table / list view — document library style' },
                     { key: 'tile-grid', text: 'Tile grid — icon-focused tiles' },
                     { key: 'icon-grid', text: 'Icon grid — compact quick access' },

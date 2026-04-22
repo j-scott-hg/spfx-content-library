@@ -14,6 +14,12 @@ export interface IItemIconOverride {
   iconName: string;
   /** Hex colour string, e.g. "#0078d4" */
   iconColor: string;
+  /**
+   * Optional absolute or site-relative URL of a custom thumbnail image.
+   * Used by the Preview display style. When present, supersedes the
+   * SharePoint-generated preview URL and the file-type icon.
+   */
+  customThumbnailUrl?: string;
 }
 
 // ─── Enumerations ────────────────────────────────────────────────────────────
@@ -25,7 +31,7 @@ export type FilterStyle = 'pills' | 'vertical-rail' | 'cards' | 'compact-buttons
 export type FilterPosition = 'top' | 'left' | 'right';
 export type CategorySortOrder = 'alpha' | 'count';
 
-export type ItemDisplayStyle = 'table' | 'card-grid' | 'tile-grid' | 'dashboard' | 'icon-grid';
+export type ItemDisplayStyle = 'table' | 'card-grid' | 'tile-grid' | 'dashboard' | 'icon-grid' | 'preview';
 export type Density = 'compact' | 'normal' | 'comfortable';
 export type ShadowIntensity = 'none' | 'subtle' | 'medium' | 'strong';
 export type LinkTarget = '_self' | '_blank';

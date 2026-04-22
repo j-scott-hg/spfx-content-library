@@ -1,6 +1,6 @@
 {
   "name": "content-library",
-  "version": "0.0.30",
+  "version": "0.0.32",
   "private": true,
   "engines": {
     "node": ">=18.17.1 <19.0.0"
@@ -23,6 +23,7 @@
     "@pnp/logging": "^3.26.0",
     "@pnp/queryable": "^3.26.0",
     "@pnp/sp": "^3.26.0",
+    "@pnp/spfx-controls-react": "^3.23.0",
     "classnames": "^2.5.1",
     "date-fns": "^4.1.0",
     "react": "17.0.1",

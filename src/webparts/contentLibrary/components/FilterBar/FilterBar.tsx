@@ -113,7 +113,7 @@ const FilterBar: React.FC<IFilterBarProps> = ({
                 aria-label={`${opt.label}${showCounts ? `, ${opt.count} items` : ''}`}
               >
                 <ColorDot catKey={opt.key} />
-                {opt.label}
+                <span className={styles.categoryLabelText}>{opt.label}</span>
                 {showCounts && (
                   <span className={styles.filterCount} aria-hidden="true">
                     {opt.count}
@@ -145,7 +145,7 @@ const FilterBar: React.FC<IFilterBarProps> = ({
                 aria-label={`${opt.label}${showCounts ? `, ${opt.count} items` : ''}`}
               >
                 <ColorDot catKey={opt.key} />
-                {opt.label}
+                <span className={styles.categoryLabelText}>{opt.label}</span>
                 {showCounts && (
                   <span className={styles.filterCount} aria-hidden="true">
                     {opt.count}
@@ -235,7 +235,7 @@ const FilterBar: React.FC<IFilterBarProps> = ({
               aria-label={`${opt.label}${showCounts ? `, ${opt.count} items` : ''}`}
             >
               <ColorDot catKey={opt.key} />
-              <span>{opt.label}</span>
+              <span className={styles.categoryLabelText}>{opt.label}</span>
               {showCounts && (
                 <span className={styles.categoryRailCount} aria-hidden="true">{opt.count}</span>
               )}

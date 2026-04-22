@@ -1,7 +1,8 @@
 import * as React from 'react';
 import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
-import { Panel, PanelType } from '@fluentui/react/lib/Panel';
 import { Icon } from '@fluentui/react/lib/Icon';
+import { Modal } from '@fluentui/react/lib/Modal';
+import { IconButton } from '@fluentui/react/lib/Button';
 import { formatDate, formatFieldValue } from '../helpers/fieldFormatting';
 import { getFileIconInfo, getFileIconColorHex } from '../helpers/fileIconMapping';
 import { IContentLibraryProps } from './IContentLibraryProps';
@@ -19,6 +20,7 @@ import DocumentTableView from './DocumentTableView/DocumentTableView';
 import DocumentCardGrid from './DocumentCardGrid/DocumentCardGrid';
 import DocumentTileGrid from './DocumentTileGrid/DocumentTileGrid';
 import DashboardView from './DashboardView/DashboardView';
+import DocumentPreviewGrid from './DocumentPreviewGrid/DocumentPreviewGrid';
 import EmptyState from './EmptyState/EmptyState';
 import LoadingState from './LoadingState/LoadingState';
 import ItemIconEditor from './ItemIconEditor/ItemIconEditor';
@@ -76,6 +78,28 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
   const handleIconOverrideSave = useCallback((itemId: string, override: IItemIconOverride | undefined) => {
     onIconOverrideSave(itemId, override);
   }, [onIconOverrideSave]);
+
+  /**
+   * Saves a custom thumbnail URL for a Preview card while preserving the
+   * existing icon/color settings already stored for that item.
+   */
+  const handleSaveThumbnail = useCallback((itemId: string, thumbnailUrl: string | undefined) => {
+    const existing: IItemIconOverride | undefined = itemIconOverrides[itemId];
+    if (!thumbnailUrl) {
+      // Remove thumbnail — keep icon/color if present, otherwise clear the override entirely
+      if (existing && (existing.iconName || existing.iconColor)) {
+        onIconOverrideSave(itemId, { iconName: existing.iconName, iconColor: existing.iconColor });
+      } else {
+        onIconOverrideSave(itemId, undefined);
+      }
+    } else {
+      onIconOverrideSave(itemId, {
+        iconName: existing?.iconName ?? '',
+        iconColor: existing?.iconColor ?? '',
+        customThumbnailUrl: thumbnailUrl,
+      });
+    }
+  }, [itemIconOverrides, onIconOverrideSave]);
 
   // ── Item click: open doc in tab or show native DispForm panel ────────────
   const handleItemClick = useCallback((item: IListItem) => {
@@ -589,6 +613,33 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
           />
         );
 
+      case 'preview':
+        return (
+          <DocumentPreviewGrid
+            items={filteredItems}
+            columns={columnDefs}
+            gridColumns={config.gridColumns || 3}
+            isDocumentLibrary={config.isDocumentLibrary}
+            linkTarget={config.linkTarget}
+            cardCornerRadius={config.cardCornerRadius || 8}
+            isEditMode={isEditMode}
+            context={context}
+            itemIconOverrides={itemIconOverrides}
+            onEditItemIcon={handleEditItemIcon}
+            onSaveThumbnail={handleSaveThumbnail}
+            onItemClick={handleItemClick}
+            cardMeta1Field={config.cardMeta1Field || 'Modified'}
+            cardMeta2Field={config.cardMeta2Field || 'Editor'}
+            allColumns={allColumnDefs}
+            enableCategoryColors={config.enableCategoryColors}
+            categoryColors={categoryColors}
+            categoryTextOverrides={categoryTextOverrides}
+            filterFieldInternalName={config.filterFieldInternalName || ''}
+            itemFontSize={config.itemFontSize || 13}
+            itemIconSize={config.itemIconSize || 24}
+          />
+        );
+
       case 'card-grid':
       default:
         return (
@@ -674,23 +725,30 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
         />
       )}
 
-      {/* List item detail panel — modern custom panel showing view columns */}
+      {/* List item detail modal — modern popup showing view columns */}
       {!config.isDocumentLibrary && detailItem && (
-        <Panel
+        <Modal
           isOpen={!!detailItem}
           onDismiss={() => setDetailItem(null)}
-          type={PanelType.medium}
-          isLightDismiss
-          hasCloseButton
-          closeButtonAriaLabel="Close"
-          onRenderHeader={() => <span />}
+          isBlocking={false}
           styles={{
-            main: { maxWidth: 560 },
-            content: { padding: 0 },
-            scrollableContent: { display: 'flex', flexDirection: 'column' },
-            commands: { position: 'absolute', top: 8, right: 8, zIndex: 1, margin: 0, padding: 0, background: 'transparent' },
+            main: {
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '24px',
+            },
           }}
         >
+          <div className={styles.detailModal}>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', padding: '8px 8px 0 8px' }}>
+              <IconButton
+                iconProps={{ iconName: 'Cancel' }}
+                title="Close"
+                ariaLabel="Close details"
+                onClick={() => setDetailItem(null)}
+              />
+            </div>
           {(() => {
             const iconInfo = getFileIconInfo(detailItem.fileType, detailItem.isFolder);
             const iconColor = getFileIconColorHex(detailItem.fileType, detailItem.isFolder);
@@ -801,7 +859,8 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
               </>
             );
           })()}
-        </Panel>
+          </div>
+        </Modal>
       )}
     </div>
   );
