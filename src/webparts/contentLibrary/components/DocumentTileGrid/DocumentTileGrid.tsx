@@ -3,6 +3,7 @@ import { Icon } from '@fluentui/react/lib/Icon';
 import { IListItem } from '../../models/IListItem';
 import { IItemIconOverride } from '../../models/IWebPartConfig';
 import { formatDate, formatFieldValue } from '../../helpers/fieldFormatting';
+import { normalizeChoiceValues, getChoiceBadgeStyle } from '../../helpers/choiceBadgeUtils';
 import { IColumnDef } from '../../services/ViewMapper';
 import { getFileIconInfo, getFileIconColorHex } from '../../helpers/fileIconMapping';
 import { getContrastTextColor, tintColor } from '../../helpers/colorUtils';
@@ -24,6 +25,9 @@ export interface IDocumentTileGridProps {
   cardMeta1Field: string;
   /** Internal field name for second meta line (empty = hide) */
   cardMeta2Field: string;
+  cardMeta1Icon: string;
+  cardMeta2Icon: string;
+  showChoicePillsOnCards: boolean;
   /** All available columns for resolving display names and types */
   allColumns: IColumnDef[];
   enableCategoryColors: boolean;
@@ -47,6 +51,9 @@ const DocumentTileGrid: React.FC<IDocumentTileGridProps> = ({
   onItemClick,
   cardMeta1Field,
   cardMeta2Field,
+  cardMeta1Icon,
+  cardMeta2Icon,
+  showChoicePillsOnCards,
   allColumns,
   enableCategoryColors,
   categoryColors,
@@ -68,6 +75,30 @@ const DocumentTileGrid: React.FC<IDocumentTileGridProps> = ({
     const raw = item[fieldName];
     if (raw === undefined || raw === null || raw === '') return '';
     return col ? formatFieldValue(raw, col.fieldType) : String(raw);
+  };
+
+  const renderMetaValue = (item: IListItem, fieldName: string): React.ReactNode => {
+    const col = colMap[fieldName];
+    const raw = item[fieldName];
+    const isChoiceField = col?.fieldType === 'Choice' || col?.fieldType === 'MultiChoice';
+    if (showChoicePillsOnCards && isChoiceField) {
+      const choices = normalizeChoiceValues(raw);
+      if (choices.length > 0) {
+        return (
+          <span className={styles.metaChoicePills}>
+            {choices.map(choice => {
+              const pillStyle = getChoiceBadgeStyle(choice);
+              return (
+                <span key={choice} className={styles.choiceBadge} style={pillStyle}>
+                  {choice}
+                </span>
+              );
+            })}
+          </span>
+        );
+      }
+    }
+    return <span className={styles.metaText}>{resolveMetaValue(item, fieldName)}</span>;
   };
 
   return (
@@ -131,7 +162,10 @@ const DocumentTileGrid: React.FC<IDocumentTileGridProps> = ({
               if (!val) return null;
               return (
                 <div key={idx} className={styles.tileMeta} style={{ ...(tileTextColor ? { color: tileTextColor, opacity: 0.7 } : {}) }}>
-                  {val}
+                  <span className={styles.tileMetaLine}>
+                    <Icon iconName={idx === 0 ? cardMeta1Icon : cardMeta2Icon} aria-hidden="true" className={styles.tileMetaIcon} />
+                    {renderMetaValue(item, fieldName)}
+                  </span>
                 </div>
               );
             })}

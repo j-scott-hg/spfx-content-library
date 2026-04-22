@@ -36,6 +36,7 @@ export type Density = 'compact' | 'normal' | 'comfortable';
 export type ShadowIntensity = 'none' | 'subtle' | 'medium' | 'strong';
 export type LinkTarget = '_self' | '_blank';
 export type SortDirection = 'asc' | 'desc';
+export type DefaultSortPreset = 'alphaAsc' | 'alphaDesc' | 'createdAsc' | 'createdDesc' | 'modifiedAsc' | 'modifiedDesc' | 'idAsc' | 'idDesc';
 
 // ─── Main Config Interface ────────────────────────────────────────────────────
 
@@ -86,9 +87,16 @@ export interface IWebPartConfig {
   cardMeta1Field: string;
   // Internal field name to show as the second meta line on cards/tiles (empty = hide)
   cardMeta2Field: string;
+  // Fluent UI icon name shown before detail line 1 text
+  cardMeta1Icon: string;
+  // Fluent UI icon name shown before detail line 2 text
+  cardMeta2Icon: string;
+  // Show choice/multi-choice values as pill badges on cards/tiles/preview
+  showChoicePillsOnCards: boolean;
 
   // ── Sorting ────────────────────────────────────────────────────────────────
   enableSortControl: boolean;
+  defaultSortPreset: DefaultSortPreset;
   defaultSortField: string;
   defaultSortDirection: SortDirection;
   allowUserSort: boolean;
@@ -157,8 +165,12 @@ export const DEFAULT_CONFIG: IWebPartConfig = {
   gridColumns: 3,
   cardMeta1Field: 'Modified',
   cardMeta2Field: 'Editor',
+  cardMeta1Icon: 'Clock',
+  cardMeta2Icon: 'Contact',
+  showChoicePillsOnCards: true,
 
   enableSortControl: false,
+  defaultSortPreset: 'modifiedDesc',
   defaultSortField: 'Modified',
   defaultSortDirection: 'desc',
   allowUserSort: true,

@@ -7,6 +7,7 @@ import { IListItem } from '../../models/IListItem';
 import { IColumnDef } from '../../services/ViewMapper';
 import { IItemIconOverride } from '../../models/IWebPartConfig';
 import { formatDate, formatFieldValue } from '../../helpers/fieldFormatting';
+import { normalizeChoiceValues, getChoiceBadgeStyle } from '../../helpers/choiceBadgeUtils';
 import { getFileIconInfo, getFileIconColorHex } from '../../helpers/fileIconMapping';
 import { LinkTarget, SortDirection } from '../../models/IWebPartConfig';
 import styles from '../../styles/ContentLibrary.module.scss';
@@ -14,6 +15,7 @@ import styles from '../../styles/ContentLibrary.module.scss';
 export interface IDocumentTableViewProps {
   items: IListItem[];
   columns: IColumnDef[];
+  allColumns: IColumnDef[];
   showColumnHeaders: boolean;
   showFileTypeIcon: boolean;
   showModifiedDate: boolean;
@@ -35,6 +37,7 @@ export interface IDocumentTableViewProps {
 const DocumentTableView: React.FC<IDocumentTableViewProps> = ({
   items,
   columns,
+  allColumns,
   showColumnHeaders,
   showFileTypeIcon,
   showModifiedDate,
@@ -59,6 +62,8 @@ const DocumentTableView: React.FC<IDocumentTableViewProps> = ({
   const effectiveColumns = columns.filter(
     c => c.internalName !== 'Title' && c.internalName !== 'FileLeafRef'
   );
+  const colMap: Record<string, IColumnDef> = {};
+  allColumns.forEach(c => { colMap[c.internalName] = c; });
 
   // ── Column widths (pixel values, user-resizable) ──────────────────────────
   // Default widths computed from field type and label length
@@ -330,7 +335,18 @@ const DocumentTableView: React.FC<IDocumentTableViewProps> = ({
 
                   {visibleEffectiveCols.map(col => (
                     <div key={col.internalName} className={styles.tableCell} role="cell">
-                      {formatFieldValue(item[col.internalName], col.fieldType)}
+                      {(col.fieldType === 'Choice' || col.fieldType === 'MultiChoice') ? (
+                        <span className={styles.tableChoicePills}>
+                          {normalizeChoiceValues(item[col.internalName]).map(choice => {
+                            const pillStyle = getChoiceBadgeStyle(choice);
+                            return (
+                              <span key={choice} className={styles.choiceBadge} style={pillStyle}>
+                                {choice}
+                              </span>
+                            );
+                          })}
+                        </span>
+                      ) : formatFieldValue(item[col.internalName], colMap[col.internalName]?.fieldType ?? col.fieldType)}
                     </div>
                   ))}
 

@@ -17,6 +17,7 @@ import { IListItem } from '../../models/IListItem';
 import { IColumnDef } from '../../services/ViewMapper';
 import { IItemIconOverride, LinkTarget } from '../../models/IWebPartConfig';
 import { formatDate, formatFieldValue } from '../../helpers/fieldFormatting';
+import { normalizeChoiceValues, getChoiceBadgeStyle } from '../../helpers/choiceBadgeUtils';
 import { getFileIconInfo, getFileIconColorHex } from '../../helpers/fileIconMapping';
 import { getContrastTextColor, tintColor } from '../../helpers/colorUtils';
 import { isItemNew } from '../../helpers/dateUtils';
@@ -43,6 +44,9 @@ export interface IDocumentPreviewGridProps {
   cardMeta1Field: string;
   /** Internal field name for second meta line (empty = hide) */
   cardMeta2Field: string;
+  cardMeta1Icon: string;
+  cardMeta2Icon: string;
+  showChoicePillsOnCards: boolean;
   allColumns: IColumnDef[];
   enableCategoryColors: boolean;
   categoryColors: Record<string, string>;
@@ -357,6 +361,9 @@ const DocumentPreviewGrid: React.FC<IDocumentPreviewGridProps> = ({
   onItemClick,
   cardMeta1Field,
   cardMeta2Field,
+  cardMeta1Icon,
+  cardMeta2Icon,
+  showChoicePillsOnCards,
   allColumns,
   enableCategoryColors,
   categoryColors,
@@ -391,6 +398,31 @@ const DocumentPreviewGrid: React.FC<IDocumentPreviewGridProps> = ({
     if (col.fieldType === 'DateTime') return 'Clock';
     if (col.fieldType === 'User') return 'Contact';
     return 'Tag';
+  };
+
+  const renderMetaValue = (item: IListItem, fieldName: string): React.ReactNode => {
+    const col = colMap[fieldName];
+    const raw = item[fieldName];
+    const isChoiceField = col?.fieldType === 'Choice' || col?.fieldType === 'MultiChoice';
+    if (showChoicePillsOnCards && isChoiceField) {
+      const choices = normalizeChoiceValues(raw);
+      if (choices.length > 0) {
+        return (
+          <span className={styles.metaChoicePills}>
+            {choices.map(choice => {
+              const pillStyle = getChoiceBadgeStyle(choice);
+              return (
+                <span key={choice} className={styles.choiceBadge} style={pillStyle}>
+                  {choice}
+                </span>
+              );
+            })}
+          </span>
+        );
+      }
+    }
+    const val = resolveMetaValue(item, fieldName);
+    return <span className={styles.previewMetaText}>{val}</span>;
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -483,8 +515,12 @@ const DocumentPreviewGrid: React.FC<IDocumentPreviewGridProps> = ({
                       className={styles.previewMeta}
                       style={cardTextColor ? { color: cardTextColor, opacity: 0.75 } : undefined}
                     >
-                      <Icon iconName={metaIcon(fieldName)} className={styles.previewMetaIcon} aria-hidden="true" />
-                      <span className={styles.previewMetaText}>{val}</span>
+                      <Icon
+                        iconName={(idx === 0 ? cardMeta1Icon : cardMeta2Icon) || metaIcon(fieldName)}
+                        className={styles.previewMetaIcon}
+                        aria-hidden="true"
+                      />
+                      {renderMetaValue(item, fieldName)}
                     </div>
                   );
                 })}

@@ -7,6 +7,7 @@ import { formatDate, formatFieldValue, truncate } from '../../helpers/fieldForma
 import { getFileIconInfo, getFileIconColorHex } from '../../helpers/fileIconMapping';
 import { getContrastTextColor, tintColor } from '../../helpers/colorUtils';
 import { isItemNew } from '../../helpers/dateUtils';
+import { normalizeChoiceValues, getChoiceBadgeStyle } from '../../helpers/choiceBadgeUtils';
 import { LinkTarget } from '../../models/IWebPartConfig';
 import styles from '../../styles/ContentLibrary.module.scss';
 
@@ -27,6 +28,9 @@ export interface IDocumentCardGridProps {
   cardMeta1Field: string;
   /** Internal field name for second meta line (empty = hide) */
   cardMeta2Field: string;
+  cardMeta1Icon: string;
+  cardMeta2Icon: string;
+  showChoicePillsOnCards: boolean;
   /** All available columns for resolving display names */
   allColumns: IColumnDef[];
   /** Category colour coding */
@@ -53,6 +57,9 @@ const DocumentCardGrid: React.FC<IDocumentCardGridProps> = ({
   onItemClick,
   cardMeta1Field,
   cardMeta2Field,
+  cardMeta1Icon,
+  cardMeta2Icon,
+  showChoicePillsOnCards,
   allColumns,
   enableCategoryColors,
   categoryColors,
@@ -89,6 +96,31 @@ const DocumentCardGrid: React.FC<IDocumentCardGridProps> = ({
     if (col.fieldType === 'URL') return 'Link';
     if (col.fieldType === 'Boolean') return 'CheckMark';
     return 'Tag';
+  };
+
+  const renderMetaValue = (item: IListItem, fieldName: string): React.ReactNode => {
+    const col = colMap[fieldName];
+    const raw = item[fieldName];
+    const isChoiceField = col?.fieldType === 'Choice' || col?.fieldType === 'MultiChoice';
+    if (showChoicePillsOnCards && isChoiceField) {
+      const choices = normalizeChoiceValues(raw);
+      if (choices.length > 0) {
+        return (
+          <span className={styles.metaChoicePills}>
+            {choices.map(choice => {
+              const pillStyle = getChoiceBadgeStyle(choice);
+              return (
+                <span key={choice} className={styles.choiceBadge} style={pillStyle}>
+                  {choice}
+                </span>
+              );
+            })}
+          </span>
+        );
+      }
+    }
+    const val = resolveMetaValue(item, fieldName);
+    return <span className={styles.metaText}>{val}</span>;
   };
 
   const descriptionCol = columns.find(
@@ -188,10 +220,11 @@ const DocumentCardGrid: React.FC<IDocumentCardGridProps> = ({
               {[cardMeta1Field, cardMeta2Field].map((fieldName, idx) => {
                 const val = resolveMetaValue(item, fieldName);
                 if (!val) return null;
+                const configuredIcon = idx === 0 ? cardMeta1Icon : cardMeta2Icon;
                 return (
                   <span key={idx} className={styles.cardMetaItem} style={{ ...(cardTextColor ? { color: cardTextColor, opacity: 0.7 } : {}) }}>
-                    <Icon iconName={metaIcon(fieldName)} aria-hidden="true" />
-                    <span className={styles.metaText}>{val}</span>
+                    <Icon iconName={configuredIcon || metaIcon(fieldName)} aria-hidden="true" />
+                    {renderMetaValue(item, fieldName)}
                   </span>
                 );
               })}

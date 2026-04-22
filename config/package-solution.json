@@ -3,7 +3,7 @@
   "solution": {
     "name": "Content Library",
     "id": "0f5f6b97-ea37-4b6d-8c2f-0cdc9d2d8207",
-    "version": "1.0.31.0",
+    "version": "1.0.32.0",
     "includeClientSideAssets": true,
     "skipFeatureDeployment": true,
     "isDomainIsolated": false,

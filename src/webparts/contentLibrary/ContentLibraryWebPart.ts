@@ -30,6 +30,21 @@ export interface IContentLibraryWebPartProps extends IWebPartConfig {
 }
 
 export default class ContentLibraryWebPart extends BaseClientSideWebPart<IContentLibraryWebPartProps> {
+  private _metaIconOptions: IPropertyPaneDropdownOption[] = [
+    { key: 'Tag', text: 'Tag' },
+    { key: 'Info', text: 'Info' },
+    { key: 'Clock', text: 'Clock' },
+    { key: 'Contact', text: 'Person' },
+    { key: 'Calendar', text: 'Calendar' },
+    { key: 'CheckMark', text: 'Check mark' },
+    { key: 'Link', text: 'Link' },
+    { key: 'Attach', text: 'Attachment' },
+    { key: 'Document', text: 'Document' },
+    { key: 'Globe', text: 'Globe' },
+    { key: 'Starburst', text: 'Star' },
+    { key: 'StatusCircleCheckmark', text: 'Status' },
+  ];
+
 
   private _dataService!: SharePointDataService;
   private _lists: IListInfo[] = [];
@@ -192,6 +207,46 @@ export default class ContentLibraryWebPart extends BaseClientSideWebPart<IConten
     if (propertyPath === 'viewId' && newValue !== oldValue) {
       const selectedView = this._views.find(v => v.id === String(newValue));
       this.properties.viewTitle = selectedView?.title ?? '';
+      this.render();
+    }
+
+    if (propertyPath === 'defaultSortPreset' && newValue !== oldValue) {
+      const preset = String(newValue);
+      switch (preset) {
+        case 'alphaAsc':
+          this.properties.defaultSortField = this.properties.isDocumentLibrary ? 'FileLeafRef' : 'Title';
+          this.properties.defaultSortDirection = 'asc';
+          break;
+        case 'alphaDesc':
+          this.properties.defaultSortField = this.properties.isDocumentLibrary ? 'FileLeafRef' : 'Title';
+          this.properties.defaultSortDirection = 'desc';
+          break;
+        case 'createdAsc':
+          this.properties.defaultSortField = 'Created';
+          this.properties.defaultSortDirection = 'asc';
+          break;
+        case 'createdDesc':
+          this.properties.defaultSortField = 'Created';
+          this.properties.defaultSortDirection = 'desc';
+          break;
+        case 'modifiedAsc':
+          this.properties.defaultSortField = 'Modified';
+          this.properties.defaultSortDirection = 'asc';
+          break;
+        case 'modifiedDesc':
+          this.properties.defaultSortField = 'Modified';
+          this.properties.defaultSortDirection = 'desc';
+          break;
+        case 'idAsc':
+          this.properties.defaultSortField = 'Id';
+          this.properties.defaultSortDirection = 'asc';
+          break;
+        case 'idDesc':
+          this.properties.defaultSortField = 'Id';
+          this.properties.defaultSortDirection = 'desc';
+          break;
+      }
+      this.context.propertyPane.refresh();
       this.render();
     }
   }
@@ -645,12 +700,55 @@ export default class ContentLibraryWebPart extends BaseClientSideWebPart<IConten
                   selectedKey: this.properties.cardMeta2Field !== undefined ? this.properties.cardMeta2Field : 'Editor',
                   disabled: !this.properties.listId,
                 }),
+                PropertyPaneDropdown('cardMeta1Icon', {
+                  label: 'Detail line 1 icon',
+                  options: this._metaIconOptions,
+                  selectedKey: this.properties.cardMeta1Icon || 'Clock',
+                }),
+                PropertyPaneDropdown('cardMeta2Icon', {
+                  label: 'Detail line 2 icon',
+                  options: this._metaIconOptions,
+                  selectedKey: this.properties.cardMeta2Icon || 'Contact',
+                }),
+                PropertyPaneToggle('showChoicePillsOnCards', {
+                  label: 'Show Choice column values as colored badges on item cards',
+                  onText: 'Yes',
+                  offText: 'No',
+                }),
               ],
             },
             {
               groupName: '⚙️ Advanced',
               isCollapsed: true,
               groupFields: [
+                PropertyPaneLabel('sortHeading', {
+                  text: 'Sort options',
+                }),
+                PropertyPaneDropdown('defaultSortPreset', {
+                  label: 'Default sort order',
+                  options: [
+                    { key: 'alphaAsc', text: 'Alphabetical (A → Z)' },
+                    { key: 'alphaDesc', text: 'Alphabetical (Z → A)' },
+                    { key: 'createdAsc', text: 'Created date (earliest → latest)' },
+                    { key: 'createdDesc', text: 'Created date (latest → earliest)' },
+                    { key: 'modifiedAsc', text: 'Modified date (oldest → newest)' },
+                    { key: 'modifiedDesc', text: 'Modified date (newest → oldest)' },
+                    { key: 'idAsc', text: 'Item ID (lowest → highest)' },
+                    { key: 'idDesc', text: 'Item ID (highest → lowest)' },
+                  ],
+                  selectedKey: this.properties.defaultSortPreset || 'modifiedDesc',
+                }),
+                PropertyPaneToggle('allowUserSort', {
+                  label: 'Allow users to change sorting',
+                  onText: 'Yes',
+                  offText: 'No',
+                }),
+                PropertyPaneToggle('enableSortControl', {
+                  label: 'Show sort controls in toolbar',
+                  onText: 'Yes',
+                  offText: 'No',
+                }),
+                PropertyPaneHorizontalRule(),
                 PropertyPaneDropdown('linkTarget', {
                   label: 'Open documents in',
                   options: [

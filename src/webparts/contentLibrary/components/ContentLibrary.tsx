@@ -4,6 +4,7 @@ import { Icon } from '@fluentui/react/lib/Icon';
 import { Modal } from '@fluentui/react/lib/Modal';
 import { IconButton } from '@fluentui/react/lib/Button';
 import { formatDate, formatFieldValue } from '../helpers/fieldFormatting';
+import { normalizeChoiceValues, getChoiceBadgeStyle } from '../helpers/choiceBadgeUtils';
 import { getFileIconInfo, getFileIconColorHex } from '../helpers/fileIconMapping';
 import { IContentLibraryProps } from './IContentLibraryProps';
 import { SharePointDataService } from '../services/SharePointDataService';
@@ -253,6 +254,12 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
     setSearchQuery('');
     setDebouncedQuery('');
   }, [config.listId]);
+
+  // ── Keep sort state aligned with property-pane defaults ─────────────────
+  useEffect(() => {
+    setSortField(config.defaultSortField || 'Modified');
+    setSortDirection(config.defaultSortDirection || 'desc');
+  }, [config.defaultSortField, config.defaultSortDirection]);
 
   // ── Computed: filtered + searched + sorted items ─────────────────────────
   const filteredItems = useMemo(() => {
@@ -527,6 +534,7 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
           <DocumentTableView
             items={filteredItems}
             columns={columnDefs}
+            allColumns={allColumnDefs}
             showColumnHeaders={config.showColumnHeaders}
             showFileTypeIcon={config.showFileTypeIcon}
             showModifiedDate={config.showModifiedDate}
@@ -561,6 +569,9 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
             onItemClick={handleItemClick}
             cardMeta1Field={config.cardMeta1Field || 'Modified'}
             cardMeta2Field={config.cardMeta2Field || 'Editor'}
+            cardMeta1Icon={config.cardMeta1Icon || 'Clock'}
+            cardMeta2Icon={config.cardMeta2Icon || 'Contact'}
+            showChoicePillsOnCards={config.showChoicePillsOnCards !== false}
             allColumns={allColumnDefs}
             enableCategoryColors={config.enableCategoryColors}
             categoryColors={categoryColors}
@@ -586,6 +597,9 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
             onItemClick={handleItemClick}
             cardMeta1Field={''}
             cardMeta2Field={''}
+            cardMeta1Icon={config.cardMeta1Icon || 'Tag'}
+            cardMeta2Icon={config.cardMeta2Icon || 'Tag'}
+            showChoicePillsOnCards={config.showChoicePillsOnCards !== false}
             allColumns={allColumnDefs}
             enableCategoryColors={config.enableCategoryColors}
             categoryColors={categoryColors}
@@ -630,6 +644,9 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
             onItemClick={handleItemClick}
             cardMeta1Field={config.cardMeta1Field || 'Modified'}
             cardMeta2Field={config.cardMeta2Field || 'Editor'}
+            cardMeta1Icon={config.cardMeta1Icon || 'Clock'}
+            cardMeta2Icon={config.cardMeta2Icon || 'Contact'}
+            showChoicePillsOnCards={config.showChoicePillsOnCards !== false}
             allColumns={allColumnDefs}
             enableCategoryColors={config.enableCategoryColors}
             categoryColors={categoryColors}
@@ -658,6 +675,9 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
             onItemClick={handleItemClick}
             cardMeta1Field={config.cardMeta1Field || 'Modified'}
             cardMeta2Field={config.cardMeta2Field || 'Editor'}
+            cardMeta1Icon={config.cardMeta1Icon || 'Clock'}
+            cardMeta2Icon={config.cardMeta2Icon || 'Contact'}
+            showChoicePillsOnCards={config.showChoicePillsOnCards !== false}
             allColumns={allColumnDefs}
             enableCategoryColors={config.enableCategoryColors}
             categoryColors={categoryColors}
@@ -829,13 +849,26 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
                     {rows.map(row => {
                       const isDate = row.internalName === 'Modified' || row.internalName === 'Created' || colTypeMap[row.internalName] === 'DateTime';
                       const isUser = row.internalName === 'Editor' || row.internalName === 'Author' || colTypeMap[row.internalName] === 'User';
+                      const isChoice = colTypeMap[row.internalName] === 'Choice' || colTypeMap[row.internalName] === 'MultiChoice';
+                      const choiceValues = isChoice ? normalizeChoiceValues(detailItem[row.internalName]) : [];
                       return (
                         <div key={row.internalName} className={styles.detailPanelRow}>
                           <div className={styles.detailPanelLabel}>{row.label}</div>
                           <div className={isDate || isUser ? styles.detailPanelValueMuted : styles.detailPanelValue}>
                             {isDate && <Icon iconName="Clock" style={{ fontSize: 12 }} aria-hidden="true" />}
                             {isUser && <Icon iconName="Contact" style={{ fontSize: 12 }} aria-hidden="true" />}
-                            {row.value}
+                            {isChoice && choiceValues.length > 0 ? (
+                              <span className={styles.detailChoicePills}>
+                                {choiceValues.map(choice => {
+                                  const pillStyle = getChoiceBadgeStyle(choice);
+                                  return (
+                                    <span key={choice} className={styles.choiceBadge} style={pillStyle}>
+                                      {choice}
+                                    </span>
+                                  );
+                                })}
+                              </span>
+                            ) : row.value}
                           </div>
                         </div>
                       );

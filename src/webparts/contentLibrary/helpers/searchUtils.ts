@@ -34,6 +34,12 @@ export function sortItems(
 ): IListItem[] {
   if (!sortField) return items;
 
+  const toDateValue = (value: unknown): number | null => {
+    if (typeof value !== 'string') return null;
+    const timestamp = Date.parse(value);
+    return Number.isNaN(timestamp) ? null : timestamp;
+  };
+
   return [...items].sort((a, b) => {
     const aVal = a[sortField];
     const bVal = b[sortField];
@@ -43,6 +49,12 @@ export function sortItems(
 
     if (typeof aVal === 'number' && typeof bVal === 'number') {
       return sortAsc ? aVal - bVal : bVal - aVal;
+    }
+
+    const aDate = toDateValue(aVal);
+    const bDate = toDateValue(bVal);
+    if (aDate !== null && bDate !== null) {
+      return sortAsc ? aDate - bDate : bDate - aDate;
     }
 
     const aStr = String(aVal).toLowerCase();
