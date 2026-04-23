@@ -715,6 +715,27 @@ export default class ContentLibraryWebPart extends BaseClientSideWebPart<IConten
                   onText: 'Yes',
                   offText: 'No',
                 }),
+                PropertyPaneHorizontalRule(),
+                PropertyPaneLabel('detailsWindowLabel', {
+                  text: 'Details window (when a list item is opened)',
+                }),
+                PropertyPaneToggle('detailsShowThumbnail', {
+                  label: 'Show thumbnail in details window when available',
+                  onText: 'On',
+                  offText: 'Off',
+                }),
+                PropertyPaneDropdown('detailsThumbnailLayout', {
+                  label: 'Thumbnail layout in details window',
+                  options: [
+                    { key: 'left', text: 'Left of title — small thumbnail (same row)' },
+                    { key: 'above', text: 'Above title — centered image, centered title' },
+                  ],
+                  selectedKey: this.properties.detailsThumbnailLayout || 'left',
+                  disabled: this.properties.detailsShowThumbnail === false,
+                }),
+                PropertyPaneLabel('detailsShowThumbnailHelp', {
+                  text: 'Uses the same image as Preview cards (custom thumbnail or file preview). When off, or if no image exists, the item icon appears.',
+                }),
               ],
             },
             {

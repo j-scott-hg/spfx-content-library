@@ -1555,6 +1555,80 @@ $transition-normal: 0.2s ease;
   word-break: break-word;
 }
 
+// Details modal — thumbnail + title (Preview / custom thumbnail)
+.detailPanelHeroRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px 24px 16px;
+  border-bottom: 1px solid $color-border;
+  margin-bottom: 4px;
+}
+
+.detailPanelHeroStack {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px 24px 20px;
+  border-bottom: 1px solid $color-border;
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.detailPanelHeroThumb {
+  flex-shrink: 0;
+  width: 120px;
+  max-width: 34%;
+  aspect-ratio: 16 / 9;
+  border-radius: 10px;
+  overflow: hidden;
+  background: $color-surface-alt;
+  border: 1px solid $color-border;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.detailPanelHeroThumbAbove {
+  width: min(260px, 70%);
+  aspect-ratio: 16 / 9;
+  margin: 0 auto 22px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: $color-surface-alt;
+  border: 1px solid $color-border;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+}
+
+.detailPanelHeroTitleLeft {
+  flex: 1;
+  min-width: 0;
+  font-size: 18px;
+  font-weight: 600;
+  color: $color-text-primary;
+  line-height: 1.3;
+  word-break: break-word;
+}
+
+.detailPanelHeroTitleAbove {
+  font-size: 18px;
+  font-weight: 600;
+  color: $color-text-primary;
+  line-height: 1.3;
+  word-break: break-word;
+  width: 100%;
+}
+
 .detailPanelSection {
   margin-top: 16px;
 }

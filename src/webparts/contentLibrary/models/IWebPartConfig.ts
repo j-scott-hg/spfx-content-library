@@ -38,6 +38,9 @@ export type LinkTarget = '_self' | '_blank';
 export type SortDirection = 'asc' | 'desc';
 export type DefaultSortPreset = 'alphaAsc' | 'alphaDesc' | 'createdAsc' | 'createdDesc' | 'modifiedAsc' | 'modifiedDesc' | 'idAsc' | 'idDesc';
 
+/** Item details modal: thumbnail next to title vs centered above title */
+export type DetailsThumbnailLayout = 'left' | 'above';
+
 // ─── Main Config Interface ────────────────────────────────────────────────────
 
 export interface IWebPartConfig {
@@ -93,6 +96,10 @@ export interface IWebPartConfig {
   cardMeta2Icon: string;
   // Show choice/multi-choice values as pill badges on cards/tiles/preview
   showChoicePillsOnCards: boolean;
+
+  // Item details modal (list items): thumbnail from overrides / preview vs icon
+  detailsShowThumbnail: boolean;
+  detailsThumbnailLayout: DetailsThumbnailLayout;
 
   // ── Sorting ────────────────────────────────────────────────────────────────
   enableSortControl: boolean;
@@ -168,6 +175,8 @@ export const DEFAULT_CONFIG: IWebPartConfig = {
   cardMeta1Icon: 'Clock',
   cardMeta2Icon: 'Contact',
   showChoicePillsOnCards: true,
+  detailsShowThumbnail: true,
+  detailsThumbnailLayout: 'left',
 
   enableSortControl: false,
   defaultSortPreset: 'modifiedDesc',

@@ -21,6 +21,7 @@ import { normalizeChoiceValues, getChoiceBadgeStyle } from '../../helpers/choice
 import { getFileIconInfo, getFileIconColorHex } from '../../helpers/fileIconMapping';
 import { getContrastTextColor, tintColor } from '../../helpers/colorUtils';
 import { isItemNew } from '../../helpers/dateUtils';
+import { resolveItemThumbnailUrl } from '../../helpers/thumbnailUtils';
 import styles from '../../styles/ContentLibrary.module.scss';
 
 // ─── Props ────────────────────────────────────────────────────────────────────
@@ -87,28 +88,6 @@ async function uploadToSiteAssets(file: File, context: WebPartContext): Promise<
     ?? `${folderUrl}/${file.name}`;
 
   return `${window.location.origin}${serverRelativeUrl}`;
-}
-
-// ─── Thumbnail resolution ─────────────────────────────────────────────────────
-
-/**
- * Returns the best available thumbnail URL for an item in priority order:
- *  1. customThumbnailUrl stored in the icon override
- *  2. SharePoint file preview URL (only available for doc libs with a fileRef)
- *  3. undefined → component falls back to file-type icon
- *
- * SharePoint preview URL pattern (works for most Office files and images in SPO):
- *   /_layouts/15/getpreview.ashx?path=<encoded server-relative path>
- */
-function resolveThumbnailUrl(item: IListItem, override: IItemIconOverride | undefined): string | undefined {
-  if (override?.customThumbnailUrl) return override.customThumbnailUrl;
-
-  if (item.fileRef) {
-    // SharePoint's built-in preview thumbnail endpoint
-    return `/_layouts/15/getpreview.ashx?resolution=3&path=${encodeURIComponent(item.fileRef)}`;
-  }
-
-  return undefined;
 }
 
 // ─── Thumbnail editor panel ───────────────────────────────────────────────────
@@ -451,7 +430,7 @@ const DocumentPreviewGrid: React.FC<IDocumentPreviewGridProps> = ({
             ? (item.fileLeafRef ?? item.title)
             : item.title;
 
-          const thumbnailUrl = resolveThumbnailUrl(item, override);
+          const thumbnailUrl = resolveItemThumbnailUrl(item, override);
 
           const catValue = filterFieldInternalName ? String(item[filterFieldInternalName] ?? '') : '';
           const catBgHex = enableCategoryColors && catValue && categoryColors[catValue] ? categoryColors[catValue] : undefined;

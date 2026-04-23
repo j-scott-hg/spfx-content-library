@@ -14,6 +14,7 @@ import { SortDirection, IItemIconOverride, ICategoryColorMap } from '../models/I
 import { extractCategories, itemMatchesCategory } from '../helpers/categoryExtraction';
 import { filterItemsBySearch, sortItems } from '../helpers/searchUtils';
 import { autoAssignCategoryColors } from '../helpers/colorUtils';
+import { resolveItemThumbnailUrl } from '../helpers/thumbnailUtils';
 import SearchBar from './SearchBar/SearchBar';
 import SortBar from './SortBar/SortBar';
 import FilterBar from './FilterBar/FilterBar';
@@ -53,6 +54,8 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
 
   // ── List item detail panel state ─────────────────────────────────────────
   const [detailItem, setDetailItem] = useState<IListItem | null>(null);
+  /** When thumbnail image errors in details modal, fall back to icon layout */
+  const [detailThumbFailed, setDetailThumbFailed] = useState(false);
 
   // Parse persisted overrides from JSON string
   const itemIconOverrides = useMemo((): Record<string, IItemIconOverride> => {
@@ -62,6 +65,10 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
       return {};
     }
   }, [config.itemIconOverridesJson]);
+
+  useEffect(() => {
+    setDetailThumbFailed(false);
+  }, [detailItem?.id]);
 
   const handleEditItemIcon = useCallback((
     itemId: string,
@@ -770,8 +777,63 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
               />
             </div>
           {(() => {
-            const iconInfo = getFileIconInfo(detailItem.fileType, detailItem.isFolder);
-            const iconColor = getFileIconColorHex(detailItem.fileType, detailItem.isFolder);
+            const override = itemIconOverrides[detailItem.id];
+            const defaultIconInfo = getFileIconInfo(detailItem.fileType, detailItem.isFolder);
+            const defaultIconColor = getFileIconColorHex(detailItem.fileType, detailItem.isFolder);
+            const iconName = (override?.iconName && String(override.iconName).trim())
+              ? override.iconName
+              : defaultIconInfo.iconName;
+            const iconColor = (override?.iconColor && String(override.iconColor).trim())
+              ? override.iconColor
+              : defaultIconColor;
+
+            const thumbUrl = resolveItemThumbnailUrl(detailItem, override);
+            const useThumbInHero = (config.detailsShowThumbnail !== false) && !!thumbUrl && !detailThumbFailed;
+            const layoutAbove = config.detailsThumbnailLayout === 'above';
+            const heroTitleText = detailItem.title || 'Item Details';
+
+            const heroHeader = ((): React.ReactElement => {
+              if (useThumbInHero && layoutAbove) {
+                return (
+                  <div className={styles.detailPanelHeroStack}>
+                    <div className={styles.detailPanelHeroThumbAbove}>
+                      <img
+                        src={thumbUrl}
+                        alt=""
+                        onError={() => setDetailThumbFailed(true)}
+                      />
+                    </div>
+                    <div className={styles.detailPanelHeroTitleAbove}>{heroTitleText}</div>
+                  </div>
+                );
+              }
+              if (useThumbInHero && !layoutAbove) {
+                return (
+                  <div className={styles.detailPanelHeroRow}>
+                    <div className={styles.detailPanelHeroThumb}>
+                      <img
+                        src={thumbUrl}
+                        alt=""
+                        onError={() => setDetailThumbFailed(true)}
+                      />
+                    </div>
+                    <div className={styles.detailPanelHeroTitleLeft}>{heroTitleText}</div>
+                  </div>
+                );
+              }
+              return (
+                <div className={styles.detailPanelHero}>
+                  <div
+                    className={styles.detailPanelHeroIcon}
+                    style={{ background: `${iconColor}18` }}
+                    aria-hidden="true"
+                  >
+                    <Icon iconName={iconName} style={{ color: iconColor }} />
+                  </div>
+                  <div className={styles.detailPanelHeroTitle}>{heroTitleText}</div>
+                </div>
+              );
+            })();
 
             // Build a lookup for field type resolution from all list fields
             const colTypeMap: Record<string, string> = {};
@@ -829,19 +891,7 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
 
             return (
               <>
-                {/* Hero header */}
-                <div className={styles.detailPanelHero}>
-                  <div
-                    className={styles.detailPanelHeroIcon}
-                    style={{ background: `${iconColor}18` }}
-                    aria-hidden="true"
-                  >
-                    <Icon iconName={iconInfo.iconName} style={{ color: iconColor }} />
-                  </div>
-                  <div className={styles.detailPanelHeroTitle}>
-                    {detailItem.title || 'Item Details'}
-                  </div>
-                </div>
+                {heroHeader}
 
                 {/* Field rows */}
                 <div className={styles.detailPanelBody}>
