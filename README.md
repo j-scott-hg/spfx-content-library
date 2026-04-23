@@ -4,6 +4,28 @@ SharePoint Framework (SPFx) **1.20** web part that connects to any SharePoint **
 
 ---
 
+## Screenshots
+
+Static previews (files live under `docs/` in this repo):
+
+<table>
+<tr>
+<td align="center"><strong>Tile view with category colours</strong></td>
+<td align="center"><strong>Card grid with filters</strong></td>
+</tr>
+<tr>
+<td><img src="docs/preview-tiles.png" width="480" alt="Tile view with category colours" /></td>
+<td><img src="docs/preview-cards.png" width="480" alt="Card grid with filters" /></td>
+</tr>
+</table>
+
+<p align="center">
+  <strong>Table / list view with horizontal scroll and resizable columns</strong><br />
+  <img src="docs/preview-list.png" width="960" alt="Table list view" />
+</p>
+
+---
+
 ## What it does
 
 - **Data**: Pick site (optional), list or library, view, and how many items to load (up to the configured limit).
