@@ -1,7 +1,8 @@
 // ─── Variables ────────────────────────────────────────────────────────────────
-$color-primary: #0078d4;
-$color-primary-dark: #106ebe;
-$color-primary-light: #deecf9;
+// Driven at runtime by ContentLibrary root inline style (--cl-*); fallbacks match default accent.
+$color-primary: var(--cl-primary, #3c6aa7);
+$color-primary-dark: var(--cl-primary-dark, #2f5686);
+$color-primary-light: var(--cl-primary-light, #e8edf4);
 $color-surface: #ffffff;
 $color-surface-alt: #f3f2f1;
 $color-border: #edebe9;
@@ -11,7 +12,7 @@ $color-text-secondary: #605e5c;
 $color-text-disabled: #a19f9d;
 $color-hover: #f3f2f1;
 $color-active: #edebe9;
-$color-focus: #0078d4;
+$color-focus: var(--cl-focus, #3c6aa7);
 
 $radius-sm: 4px;
 $radius-md: 8px;
@@ -1779,7 +1780,7 @@ $transition-normal: 0.2s ease;
   }
 
   &:focus-visible {
-    outline: 2px solid #0078d4;
+    outline: 2px solid $color-focus;
     outline-offset: 2px;
   }
 }

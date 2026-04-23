@@ -13,7 +13,7 @@ import { IListItem, IFieldDefinition, IViewInfo } from '../models/IListItem';
 import { SortDirection, IItemIconOverride, ICategoryColorMap } from '../models/IWebPartConfig';
 import { extractCategories, itemMatchesCategory } from '../helpers/categoryExtraction';
 import { filterItemsBySearch, sortItems } from '../helpers/searchUtils';
-import { autoAssignCategoryColors } from '../helpers/colorUtils';
+import { autoAssignCategoryColors, getAccentCssProperties } from '../helpers/colorUtils';
 import { resolveItemThumbnailUrl } from '../helpers/thumbnailUtils';
 import SearchBar from './SearchBar/SearchBar';
 import SortBar from './SortBar/SortBar';
@@ -69,6 +69,11 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
   useEffect(() => {
     setDetailThumbFailed(false);
   }, [detailItem?.id]);
+
+  const accentRootStyle = useMemo(
+    (): React.CSSProperties => getAccentCssProperties(config.accentColorHex) as React.CSSProperties,
+    [config.accentColorHex]
+  );
 
   const handleEditItemIcon = useCallback((
     itemId: string,
@@ -380,7 +385,7 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
   // ── Not configured state ─────────────────────────────────────────────────
   if (!config.listId) {
     return (
-      <div className={styles.contentLibraryRoot}>
+      <div className={styles.contentLibraryRoot} style={accentRootStyle}>
         {config.showTitle && config.webPartTitle && (
           <h2 className={styles.webPartTitle}>{config.webPartTitle}</h2>
         )}
@@ -400,7 +405,7 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
   // ── Error state ──────────────────────────────────────────────────────────
   if (error) {
     return (
-      <div className={styles.contentLibraryRoot}>
+      <div className={styles.contentLibraryRoot} style={accentRootStyle}>
         {config.showTitle && config.webPartTitle && (
           <h2 className={styles.webPartTitle}>{config.webPartTitle}</h2>
         )}
@@ -699,7 +704,7 @@ const ContentLibrary: React.FC<IContentLibraryProps> = ({ config, context, isEdi
 
   // ── Main render ──────────────────────────────────────────────────────────
   return (
-    <div className={rootClass}>
+    <div className={rootClass} style={accentRootStyle}>
       {config.showTitle && config.webPartTitle && (
         <h2 className={styles.webPartTitle}>{config.webPartTitle}</h2>
       )}

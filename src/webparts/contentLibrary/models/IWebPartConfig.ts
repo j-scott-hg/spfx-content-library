@@ -80,6 +80,8 @@ export interface IWebPartConfig {
   density: Density;
   cardCornerRadius: number; // px
   shadowIntensity: ShadowIntensity;
+  /** Primary accent (#rrggbb) — links, active filters, focus rings, primary controls */
+  accentColorHex: string;
   showFileTypeIcon: boolean;
   showModifiedDate: boolean;
   showModifiedBy: boolean;
@@ -164,6 +166,7 @@ export const DEFAULT_CONFIG: IWebPartConfig = {
   density: 'normal',
   cardCornerRadius: 8,
   shadowIntensity: 'subtle',
+  accentColorHex: '#3c6aa7',
   showFileTypeIcon: true,
   showModifiedDate: true,
   showModifiedBy: true,

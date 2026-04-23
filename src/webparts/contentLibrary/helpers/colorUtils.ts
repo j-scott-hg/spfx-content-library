@@ -19,6 +19,64 @@ function hexToRgb(hex: string): [number, number, number] {
   return [r, g, b];
 }
 
+function rgbToHex(r: number, g: number, b: number): string {
+  const clamp = (n: number): string => {
+    const x = Math.max(0, Math.min(255, Math.round(n)));
+    const h = x.toString(16);
+    return h.length === 1 ? `0${h}` : h;
+  };
+  return `#${clamp(r)}${clamp(g)}${clamp(b)}`;
+}
+
+/** Blend hex toward black; strength 0–1 (e.g. 0.18). */
+function mixTowardBlack(hex: string, strength: number): string {
+  try {
+    const [r, g, b] = hexToRgb(hex);
+    const t = Math.max(0, Math.min(1, strength));
+    return rgbToHex(r * (1 - t * 0.92), g * (1 - t * 0.92), b * (1 - t * 0.92));
+  } catch {
+    return '#2d5080';
+  }
+}
+
+const DEFAULT_ACCENT_FALLBACK = '#3c6aa7';
+
+/**
+ * Normalises author-entered hex (#rgb, #rrggbb, or rrggbb) for web part accent colour.
+ */
+export function normalizeAccentHex(input: string | undefined, fallback: string = DEFAULT_ACCENT_FALLBACK): string {
+  let t = (input || '').trim();
+  if (!t) return fallback;
+  t = t.replace(/^#/, '');
+  if (/^[0-9A-Fa-f]{3}$/.test(t)) {
+    t = `${t[0]}${t[0]}${t[1]}${t[1]}${t[2]}${t[2]}`;
+  }
+  if (!/^[0-9A-Fa-f]{6}$/.test(t)) return fallback;
+  const full = `#${t.toLowerCase()}`;
+  try {
+    const [r, g, b] = hexToRgb(full);
+    if ([r, g, b].some(n => Number.isNaN(n))) return fallback;
+  } catch {
+    return fallback;
+  }
+  return full;
+}
+
+/**
+ * CSS custom properties for the web part root (links, active filters, focus, primary buttons).
+ */
+export function getAccentCssProperties(accentInput: string | undefined): Record<string, string> {
+  const primary = normalizeAccentHex(accentInput);
+  const primaryDark = mixTowardBlack(primary, 0.22);
+  const primaryLight = tintColor(primary, 0.22);
+  return {
+    '--cl-primary': primary,
+    '--cl-primary-dark': primaryDark,
+    '--cl-primary-light': primaryLight,
+    '--cl-focus': primary,
+  };
+}
+
 /**
  * Calculates the relative luminance of an sRGB colour (WCAG 2.1 formula).
  */

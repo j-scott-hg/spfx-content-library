@@ -418,6 +418,11 @@ export default class ContentLibraryWebPart extends BaseClientSideWebPart<IConten
               groupName: '🎨 Display Style',
               isCollapsed: false,
               groupFields: [
+                PropertyPaneTextField('accentColorHex', {
+                  label: 'Accent colour (hex)',
+                  placeholder: '#3c6aa7',
+                  description: 'Used for links, active filters, focus outlines, and primary buttons. Use # followed by six hex digits (e.g. #3c6aa7). Invalid values fall back to the default.',
+                }),
                 PropertyPaneDropdown('itemDisplayStyle', {
                   label: 'Item display style',
                   options: [
